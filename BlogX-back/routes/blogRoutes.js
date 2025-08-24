@@ -192,6 +192,19 @@ router.delete('/:blogId/comments/:commentId', protect, async (req, res) => {
   }
 });
 
+// Get current user's blogs
+router.get('/user/my-blogs', protect, async (req, res) => {
+  try {
+    const blogs = await Blog.find({ author: req.user._id })
+      .populate('author', 'username')
+      .populate('comments')
+      .sort({ createdAt: -1 });
+    res.json(blogs);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Get blogs by user (profile)
 router.get('/user/:userId', async (req, res) => {
   try {

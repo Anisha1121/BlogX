@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/User');
+const Blog = require('../models/Blog');
 const generateToken = require('../utils/generateToken');
 const { protect, admin } = require('../middleware/auth');
 const mongoose = require('mongoose');
@@ -68,6 +69,18 @@ router.post('/login', async (req, res) => {
 // Get current user profile
 router.get('/profile', protect, async (req, res) => {
   res.json(req.user);
+});
+
+// Get user's blogs
+router.get('/my-blogs', protect, async (req, res) => {
+  try {
+    const blogs = await Blog.find({ author: req.user._id })
+      .populate('author', 'username')
+      .sort({ createdAt: -1 });
+    res.json(blogs);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 // Admin: get all users
