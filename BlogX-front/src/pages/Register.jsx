@@ -50,7 +50,7 @@ const Register = () => {
     }
   }
 
-  const handleGoogleSuccess = (userData) => {
+  const handleGoogleSuccess = () => {
     // Handle successful Google authentication
     navigate('/')
   }
