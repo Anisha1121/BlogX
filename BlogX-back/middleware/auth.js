@@ -15,6 +15,15 @@ const protect = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = await User.findById(decoded.id).select('-password');
+    
+    // Check if user is blocked
+    if (req.user && req.user.isBlocked) {
+      return res.status(403).json({ 
+        message: 'Your account has been blocked by the administrator. Please contact support.',
+        isBlocked: true 
+      });
+    }
+    
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Not authorized, token failed' });

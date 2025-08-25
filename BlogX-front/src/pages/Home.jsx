@@ -1,6 +1,22 @@
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 import Navbar from '../components/Navbar'
 
 const Home = () => {
+  const navigate = useNavigate()
+  const { user } = useAuth()
+
+  const handleStartWriting = () => {
+    if (user) {
+      navigate('/create-blog')
+    } else {
+      navigate('/login')
+    }
+  }
+
+  const handleExploreStories = () => {
+    navigate('/blogs')
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
       <Navbar />
@@ -22,10 +38,16 @@ const Home = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+              <button 
+                onClick={handleStartWriting}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+              >
                 Start Writing
               </button>
-              <button className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-full text-lg font-semibold hover:border-purple-600 hover:text-purple-600 transition-all duration-200">
+              <button 
+                onClick={handleExploreStories}
+                className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-full text-lg font-semibold hover:border-purple-600 hover:text-purple-600 transition-all duration-200"
+              >
                 Explore Stories
               </button>
             </div>

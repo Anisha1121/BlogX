@@ -62,6 +62,22 @@ const AdminDashboard = () => {
     }
   }
 
+  const toggleUserBlock = async (userId, isBlocked) => {
+    const action = isBlocked ? 'unblock' : 'block'
+    if (window.confirm(`Are you sure you want to ${action} this user?`)) {
+      try {
+        await axios.patch(`/users/${userId}/${action}`)
+        setUsers(users.map(user => 
+          user._id === userId ? { ...user, isBlocked: !isBlocked } : user
+        ))
+        alert(`User ${action}ed successfully`)
+      } catch (error) {
+        console.error(`Error ${action}ing user:`, error)
+        alert(`Failed to ${action} user`)
+      }
+    }
+  }
+
   const deleteBlog = async (blogId) => {
     if (window.confirm('Are you sure you want to delete this blog?')) {
       try {
@@ -245,6 +261,9 @@ const AdminDashboard = () => {
                           Role
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Joined
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -270,18 +289,42 @@ const AdminDashboard = () => {
                               {user.role}
                             </span>
                           </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                              user.isBlocked 
+                                ? 'bg-red-100 text-red-800' 
+                                : 'bg-green-100 text-green-800'
+                            }`}>
+                              {user.isBlocked ? 'Blocked' : 'Active'}
+                            </span>
+                          </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {new Date(user.createdAt).toLocaleDateString()}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            {user.role !== 'admin' && (
-                              <button
-                                onClick={() => deleteUser(user._id)}
-                                className="text-red-600 hover:text-red-900"
-                              >
-                                Delete
-                              </button>
-                            )}
+                            <div className="flex space-x-2">
+                              {user.role !== 'admin' && (
+                                <>
+                                  <button
+                                    onClick={() => toggleUserBlock(user._id, user.isBlocked)}
+                                    className={`${
+                                      user.isBlocked 
+                                        ? 'text-green-600 hover:text-green-900' 
+                                        : 'text-orange-600 hover:text-orange-900'
+                                    }`}
+                                  >
+                                    {user.isBlocked ? 'Unblock' : 'Block'}
+                                  </button>
+                                  <span className="text-gray-300">|</span>
+                                  <button
+                                    onClick={() => deleteUser(user._id)}
+                                    className="text-red-600 hover:text-red-900"
+                                  >
+                                    Delete
+                                  </button>
+                                </>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))}

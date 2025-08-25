@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import Navbar from '../components/Navbar'
+import GoogleAuth from '../components/GoogleAuth'
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -49,6 +50,15 @@ const Register = () => {
     }
   }
 
+  const handleGoogleSuccess = (userData) => {
+    // Handle successful Google authentication
+    navigate('/')
+  }
+
+  const handleGoogleError = (error) => {
+    setError(error)
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
       <Navbar />
@@ -70,6 +80,25 @@ const Register = () => {
                 {error}
               </div>
             )}
+
+            {/* Google Sign-Up */}
+            <div className="mb-6">
+              <GoogleAuth 
+                type="register" 
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+              />
+            </div>
+
+            {/* OR Divider */}
+            <div className="relative mb-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">or continue with</span>
+              </div>
+            </div>
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>

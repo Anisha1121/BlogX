@@ -3,8 +3,9 @@ import axios from 'axios'
 
 export const AuthContext = createContext()
 
-// Set axios base URL
-axios.defaults.baseURL = 'http://localhost:5000/api'
+// Set axios base URL from environment variable
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
+axios.defaults.baseURL = API_BASE_URL
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
